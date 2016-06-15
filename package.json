@@ -1,0 +1,22 @@
+{
+  "name": "ntlmrequest",
+  "version": "1.0.0",
+  "description": "Send request with ntlm tokens",
+  "main": "ntlmrequest.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies":{
+    "ntlm": "https://github.com/prystoynyy/node-ntlm.git"
+  },
+  "repository": {
+    "type": "git",
+    "url": "empry"
+  },
+  "keywords": [
+    "ntlm",
+    "request"
+  ],
+  "author": "Vasyl Prystoynyy",
+  "license": "ISC"
+}
