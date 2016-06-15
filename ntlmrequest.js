@@ -1,4 +1,4 @@
-module.exports = function(hostname, domain, users) {
+module.exports = function(protocol, hostname, domain, users) {
     var Promise = require('promise');
     var ntlm = require('ntlm'),
         ntlmrequest = {};
