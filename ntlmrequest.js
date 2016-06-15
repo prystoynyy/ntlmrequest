@@ -1,6 +1,16 @@
 module.exports = function(hostname, domain, users) {
     var Promise = require('promise');
     var ntlm = require('ntlm'),
+        ntlmrequest = {};
+    if (protocol === "http") {
+        ntlmrequest = require('request').defaults({
+            agentClass: require('agentkeepalive').HttpAgent,
+            rejectUnauthorized: false,
+            headers: {
+                "accept": "application/json; odata=verbose"
+            }
+        });
+    } else if (protocol === "https") {
         ntlmrequest = require('request').defaults({
             agentClass: require('agentkeepalive').HttpsAgent,
             rejectUnauthorized: false,
@@ -8,6 +18,9 @@ module.exports = function(hostname, domain, users) {
                 "accept": "application/json; odata=verbose"
             }
         });
+    } else {
+        throw new Error("Please use 'http' or 'https' protocols");
+    }
 
     function findUser(isAdmin) {
         isAdmin = isAdmin || false;
@@ -17,7 +30,7 @@ module.exports = function(hostname, domain, users) {
                 return users[i];
             }
         }
-        throw new Error("User not found"); 
+        throw new Error("User not found");
         return null;
     }
 
@@ -47,7 +60,11 @@ module.exports = function(hostname, domain, users) {
             json: data
         }, function(err, res) {
             hr = JSON.parse(JSON.stringify(headers));
-            hr["Authorization"] = ntlm.responseHeader(res, url, domain, user.username, user.password)
+            try {
+                hr["Authorization"] = ntlm.responseHeader(res, url, domain, user.username, user.password)
+            } catch (e) {
+                throw new Error(e + " | " + err);
+            }
             ntlmrequest(url, {
                 headers: hr,
                 method: method,
