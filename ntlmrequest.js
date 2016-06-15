@@ -1,6 +1,5 @@
-module.exports = function(hostname, domain) {
+module.exports = function(hostname, domain, users) {
     var Promise = require('promise');
-    var users = require("../config/users");
     var ntlm = require('ntlm'),
         ntlmrequest = require('request').defaults({
             agentClass: require('agentkeepalive').HttpsAgent,
