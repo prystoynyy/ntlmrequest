@@ -10,12 +10,14 @@ module.exports = function(hostname, domain, users) {
         });
 
     function findUser(isAdmin) {
+        isAdmin = isAdmin || false;
         var i = 0;
         for (; i < users.length; i++) {
             if (users[i].isAdmin == isAdmin) {
                 return users[i];
             }
         }
+        throw new Error("User not found"); 
         return null;
     }
 
