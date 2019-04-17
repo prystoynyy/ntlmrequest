@@ -1,4 +1,6 @@
-module.exports = function(protocol, hostname, domain, users) {
+const nc = require("ntlm-client");
+
+module.exports = function (protocol, hostname, domain, users) {
     var Promise = require('promise');
     var ntlm = require('ntlm'),
         ntlmrequest = {};
@@ -52,13 +54,30 @@ module.exports = function(protocol, hostname, domain, users) {
         if (typeof headers === "undefined") {
             headers = {};
         }
+
+        return nc.request({
+            uri: url,
+            method: method,
+            username: domain + "\\" + user.username,
+            password: user.password,
+            request: {
+                json: data
+            }
+        })
+        .then(d=>{
+            success(d);
+        })
+        .catch(e=>{
+            error(e);
+        })
+
         var hr = JSON.parse(JSON.stringify(headers || {}));
         hr["Authorization"] = ntlm.challengeHeader(hostname, domain);
         ntlmrequest(url, {
             headers: hr,
             method: method,
             json: data
-        }, function(err, res) {
+        }, function (err, res) {
             hr = JSON.parse(JSON.stringify(headers));
             try {
                 hr["Authorization"] = ntlm.responseHeader(res, url, domain, user.username, user.password)
@@ -69,7 +88,7 @@ module.exports = function(protocol, hostname, domain, users) {
                 headers: hr,
                 method: method,
                 json: data
-            }, function(err, res, body) {
+            }, function (err, res, body) {
                 if (err) {
                     error(err);
                 } else {
